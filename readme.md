@@ -82,8 +82,8 @@ The model was trained for 200 epochs, achieving:
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/your-username/semantic-caption-generation.git
-    cd semantic-caption-generation
+    git clone https://github.com/Ghaith-Chamaa/Semantic-Caption-Generation.git
+    cd Semantic-Caption-Generation
     ```
 
 2.  **Set up a virtual environment:**
