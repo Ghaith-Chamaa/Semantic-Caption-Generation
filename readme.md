@@ -34,9 +34,9 @@ A primary application for this technology is to automatically generate descripti
 
 The project is broken down into three main stages: Data Preparation, NLP Preprocessing, and Model Training.
 
-### 1. Data Ingestion & Preparation
+### 1. Data Preparation
 
-The Visual Genome dataset is composed of multiple large JSON files containing information about objects, attributes, relationships, and regions.
+The Visual Genome dataset is composed of multiple large JSON files containing information about objects, attributes, relationships, and regions. The links to the necessary JSON files can be found in the `Semantic-Caption-Generation.gdrive` file.
 
 1.  **Loading Data:** The raw JSON files are loaded into a MongoDB database.
 2.  **Normalization & Merging:** A series of aggregation queries (see `appendix` of the report **in Arabic**) are run to merge these disparate sources. The goal is to create a single, unified document for each image that links every object to its attributes and its role in various relationships. This step is crucial for creating clean training pairs.
@@ -76,7 +76,7 @@ The model was trained for 200 epochs, achieving:
 
 *   Python 3.8 or higher
 *   An active MongoDB instance
-*   The [Visual Genome](https://visualgenome.org/api/v0/api_home.html) dataset
+*   The [Visual Genome](https://visualgenome.org/api/v0/api_home.html) dataset. (Link to the required JSON files are in `Semantic-Caption-Generation.gdrive`).
 
 ### Installation & Setup
 
@@ -100,18 +100,18 @@ The model was trained for 200 epochs, achieving:
 4.  **Database Setup:**
     *   Download the Visual Genome dataset JSON files.
     *   Set up a MongoDB database and import the JSON files into separate collections.
-    *   Run the data preparation scripts (containing the MongoDB aggregation queries) to create the final, normalized collection for training.
+    *   Run the data preparation scripts (containing the MongoDB aggregation queries) to create the final, normalized collection for training, already provided in the `Semantic-Caption-Generation.gdrive` file.
 
 ### Running the Model
 
 1.  **Train the model:**
     ```sh
-    python train.py --data_path /path/to/normalized_data.csv --embedding_dim 300 --epochs 200
+    python model_cat_entropy.py
     ```
 
 2.  **Generate a description:**
     ```sh
-    python predict.py --model_path /path/to/saved_model.h5 --input "A sign on the facade of the building"
+    python model_cat_entropy2.py 
     ```
 
 ## 📊 Results & Examples
@@ -135,7 +135,7 @@ The discrepancy in results highlights the challenges of the task and suggests ar
 *   **Increase Dataset Size:** Use a larger and more diverse dataset to improve the model's generalization and reduce errors.
 *   **Hyperparameter Optimization:** Conduct a systematic search for optimal parameters, such as embedding dimensions, number of LSTM units, and learning rate.
 
-## 👥 Authors & Acknowledgements
+## 👥 Acknowledgements
 
 This project was developed under the supervision of:
 *   **Dr. Fadel Sukkar**
