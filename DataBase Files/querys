@@ -1,0 +1,392 @@
+// testing
+
+db.tess.aggregate([{ $lookup: { from: "object_synsets", localField: "synset", foreignField: "_id", as: "values" } }, { $project: { "values.values": 1, _id: 0 } }, { $unwind: "$values" },
+    { $replaceWith: "$values" }
+])
+
+
+// join for synsets in images
+
+
+db.images.aggregate([{ $match: { _id: ObjectId("6278f04627d868b8d636ac52") } }, { $lookup: { from: "object_synsets", localField: "objects.synsets", foreignField: "_id", as: "values" } }, { $project: { "values.values": 1, _id: 0 } }, { $unwind: "$values" },
+    { $replaceWith: "$values" }
+])
+
+
+// join between attributes and objects (images)
+
+
+db.imagess.aggregate([{
+        $unwind: "$objects"
+    },
+    {
+        $project: {
+            "objects.merged_object_ids": 1,
+            "objects.object_id": 1,
+            "image_id": 1
+        }
+    },
+    {
+
+
+        $lookup: {
+            from: "attributess",
+            let: {
+                localId: "$objects.object_id",
+                localImage: "$image_id"
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$attributes" },
+
+                {
+                    $match: {
+                        $expr: {
+                            $eq: [
+                                "$attributes.object_id",
+                                "$$localId"
+                            ]
+                        }
+                    }
+                }
+            ],
+            as: "x"
+
+        }
+    },
+    {
+        $lookup: {
+            from: "attributess",
+            let: {
+                localId: "$objects.merged_object_ids",
+                localimage: "$image_id"
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localimage"] } } },
+                { $unwind: "$attributes" },
+
+                {
+                    $match: {
+                        $expr: {
+
+                            $in: [
+                                "$attributes.object_id",
+                                "$$localId"
+                            ]
+                        }
+
+
+                    }
+                }
+            ],
+            as: "y"
+        }
+    },
+    {
+        $project: {
+            "x": 1,
+            result: {
+                $reduce: {
+                    input: "$y.attributes.attributes",
+                    initialValue: [],
+                    in: { $concatArrays: ["$$value", "$$this"] }
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            attributes: {
+                $reduce: {
+                    input: "$x.attributes.attributes",
+                    initialValue: "$result",
+                    in: { $concatArrays: ["$$value", "$$this"] }
+                }
+            }
+        }
+    }
+
+
+
+])
+
+
+
+db.relationshipss.aggregate([
+    { $sample: { size: 1001 } },
+    {
+        $unwind: "$relationships"
+    },
+
+
+    {
+
+        $lookup: {
+            from: "attributess",
+            let: {
+                localObject: "$relationships.object.object_id",
+                localImage: "$image_id",
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$attributes" },
+
+                {
+                    $match: {
+                        $expr: {
+                            $eq: [
+                                "$attributes.object_id",
+                                "$$localObject"
+                            ]
+                        }
+                    }
+                },
+                { $lookup: { from: "attribute_synsets", localField: "attributes.synsets", foreignField: "_id", as: "attributes.synsets" } }
+
+            ],
+            as: "relationships.object.object_id"
+
+        }
+
+
+    }, { $lookup: { from: "object_synsets", localField: "relationships.object.synsets", foreignField: "_id", as: "relationships.object.synsets" } },
+    {
+        $lookup: {
+            from: "attributess",
+            let: {
+                localObject: "$relationships.object.object_id",
+                localImage: "$image_id",
+                mergedObject: { $ifNull: ["$relationships.object.merged_object_ids", []] },
+
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$attributes" },
+
+
+                {
+                    $match: {
+                        $expr: {
+
+                            $in: [
+                                "$attributes.object_id",
+                                "$$mergedObject"
+                            ]
+                        }
+
+
+                    }
+                },
+                { $lookup: { from: "attribute_synsets", localField: "attributes.synsets", foreignField: "_id", as: "attributes.synsets" } }
+
+            ],
+            as: "relationships.object.merged_object_ids"
+
+        }
+    },
+
+
+
+
+    {
+        $lookup: {
+            from: "attributess",
+            let: {
+                localSubject: "$relationships.subject.object_id",
+                localImage: "$image_id",
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$attributes" },
+
+                {
+                    $match: {
+                        $expr: {
+                            $eq: [
+                                "$attributes.object_id",
+                                "$$localSubject"
+                            ]
+                        }
+                    }
+                },
+                { $lookup: { from: "attribute_synsets", localField: "attributes.synsets", foreignField: "_id", as: "attributes.synsets" } }
+
+            ],
+            as: "relationships.subject.object_id"
+
+        }
+
+
+    }, { $lookup: { from: "object_synsets", localField: "relationships.subject.synsets", foreignField: "_id", as: "relationships.subject.synsets" } }
+
+    ,
+    {
+        $lookup: {
+            from: "attributess",
+            let: {
+                localObject: "$relationships.object.object_id",
+                localSubject: "$relationships.subject.object_id",
+                localImage: "$image_id",
+                mergedObject: { $ifNull: ["$relationships.object.merged_object_ids", []] },
+                mergedSubject: { $ifNull: ["$relationships.subject.merged_object_ids", []] }
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$attributes" },
+
+
+                {
+                    $match: {
+                        $expr: {
+
+                            $in: [
+                                "$attributes.object_id",
+                                "$$mergedSubject"
+                            ]
+                        }
+
+
+                    }
+                },
+                { $lookup: { from: "attribute_synsets", localField: "attributes.synsets", foreignField: "_id", as: "attributes.synsets" } }
+
+            ],
+            as: "relationships.subject.merged_object_ids"
+
+        }
+    },
+    { $lookup: { from: "relationship_synsets", localField: "relationships.synsets", foreignField: "_id", as: "relationships.synsets" } }
+
+    , {
+        $group: {
+            _id: "$_id",
+            relationships: { $push: "$$ROOT" },
+            image_id: { $first: "$image_id" }
+        }
+    },
+    { $out: { db: "visual_genome", coll: "Results" } }
+
+], { "allowDiskUse": true })
+
+
+
+//testing
+
+
+db.region_graphss.aggregate([
+
+    {
+        $unwind: "$regions"
+    },
+
+    {
+        $project: {
+            relation: "$regions.relationships.relationship_id",
+            image_id: 1
+
+        }
+    },
+    {
+        $project: {
+            relation: 1,
+            image_id: 1
+
+        }
+    },
+    {
+
+        $lookup: {
+            from: "Results",
+            let: {
+                localrelationship: "$relation",
+                localImage: "$image_id",
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$relationships" },
+
+                {
+                    $match: {
+                        $expr: {
+                            $in: [
+                                "$relationships.relationships.relationship_id",
+                                "$$localrelationship"
+                            ]
+                        }
+                    }
+                },
+
+
+            ],
+            as: "x"
+
+        }
+
+    },
+    {
+        $group: {
+            _id: "$_id",
+            relationships: { $push: "$$ROOT" },
+            image_id: { $first: "$image_id" }
+        }
+    }
+
+], { "allowDiskUse": true })
+
+
+
+
+
+
+db.region_graphss.aggregate([{
+        $sample: { size: 10 }
+    },
+    {
+        $unwind: "$regions"
+    },
+
+    {
+        $project: {
+            regions: 1,
+            _id: 0,
+            image_id: 1
+
+        }
+    },
+    {
+
+        $lookup: {
+            from: "Results",
+            let: {
+                localrelationship: { $ifNull: ["$regions.relationships.relationship_id", []] },
+                localImage: "$image_id",
+            },
+
+            pipeline: [
+                { $match: { $expr: { $eq: ["$image_id", "$$localImage"] } } },
+                { $unwind: "$relationships" },
+                {
+                    $match: {
+                        $expr: {
+                            $in: [
+                                "$relationships.relationships.relationship_id",
+                                "$$localrelationship"
+                            ]
+                        }
+                    }
+                },
+
+
+            ],
+            as: "regions.relationships"
+
+        }
+    }, { $out: { db: "visual_genome", coll: "tesst" } }
+], { "allowDiskUse": true })

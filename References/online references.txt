@@ -1,0 +1,63 @@
+database building :
+
+	https://www.mongodb.com/community/forums
+
+model Building :
+	
+	stop words : NO , because it will eliminate the predicates in the input which most of them are stop words
+	
+		https://medium.com/@limavallantin/why-is-removing-stop-words-not-always-a-good-idea-c8d35bd77214
+
+		https://medium.com/@saitejaponugoti/stop-words-in-nlp-5b248dadad47
+
+	punctuation removal ++++
+
+	tokenization : YES , BPE cos it will allow for unknown words to get discovered +++++ 
+	
+		https://leimao.github.io/blog/Byte-Pair-Encoding/
+		
+		https://pypi.org/project/tokenizers/0.12.1/
+
+		https://huggingface.co/docs/tokenizers/quicktour
+
+		https://www.freecodecamp.org/news/evolution-of-tokenization/
+		
+	stemming and lemmetization : NO , cos it will eliminate the morphological diversity of the words
+		
+		https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
+		
+		https://towardsdatascience.com/stemming-vs-lemmatization-2daddabcb221
+
+		https://stackoverflow.com/questions/71261467/should-you-stem-and-lemmatize
+		
+		https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
+
+	word embeddings : YES , skip gram cos it takes into account rare words   +++++ 
+		
+		https://www.kdnuggets.com/2021/11/guide-word-embedding-techniques-nlp.html
+
+		https://www.baeldung.com/cs/word-embeddings-cbow-vs-skip-gram#:~:text=According%20to%20the%20original%20paper,better%20represent%20more%20frequent%20words.
+
+		https://towardsdatascience.com/word-embedding-techniques-word2vec-and-tf-idf-explained-c5d02e34d08#:~:text=The%20word%20embedding%20techniques%20are,purpose%20of%20processing%20the%20data.
+
+		https://analyticsindiamag.com/guide-to-word2vec-using-skip-gram-model/
+
+		https://towardsdatascience.com/nlp-embedding-techniques-51b7e6ec9f92
+
+		https://medium.com/analytics-vidhya/understanding-embedding-layer-in-keras-bbe3ff1327ce
+
+		https://www.kaggle.com/code/rajmehra03/a-detailed-explanation-of-keras-embedding-layer/notebook
+
+	encoder decoder LSTM : remember to reverse the ordering of the input
+		
+		https://pradeep-dhote9.medium.com/seq2seq-encoder-decoder-lstm-model-1a1c9a43bbac
+
+		https://machinelearningmastery.com/teacher-forcing-for-recurrent-neural-networks/
+
+		https://machinelearningmastery.com/develop-encoder-decoder-model-sequence-sequence-prediction-keras/
+		
+extras :
+
+	https://stackoverflow.com/questions
+
+	https://www.altexsoft.com/blog/semi-supervised-learning/
