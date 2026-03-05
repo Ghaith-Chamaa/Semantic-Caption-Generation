@@ -7,7 +7,7 @@
 This repository contains the source code for the fourth-year (2021-2022) project from the University of Aleppo, Faculty of Informatics. The project focuses on generating human-readable descriptive text from structured semantic data using an AI and NLP-based approach.
 
 
-## 📌 Overview
+## Overview
 
 The core objective of this project is to build a system that can translate structured textual relationships (e.g., `subject-predicate-object` triples) into natural, descriptive sentences. This is achieved by training a sequence-to-sequence (Seq2Seq) neural network.
 
@@ -20,7 +20,7 @@ The model learns to generate a cohesive description, such as: **"A man in a red 
 
 A primary application for this technology is to automatically generate descriptive `alt-text` for images on the web, enhancing accessibility and providing context in situations with slow internet connections or limited disk space.
 
-## ✨ Key Features
+## Key Features
 
 *   **Data-Driven:** Utilizes the rich **Visual Genome** dataset, which contains dense annotations of objects, attributes, and relationships within images.
 *   **NoSQL Database Integration:** Employs MongoDB to efficiently store, query, and merge the complex, nested JSON data from the dataset into a normalized format suitable for training.
@@ -30,7 +30,7 @@ A primary application for this technology is to automatically generate descripti
 *   **Deep Learning Model:** Implements a **Sequence-to-Sequence (Seq2Seq)** architecture with **LSTM** (Long Short-Term Memory) units to handle variable-length input and output sequences.
 *   **Efficient Training:** Employs the **Teacher Forcing** technique to stabilize and accelerate the training process of the recurrent neural network.
 
-## 🏗️ System Architecture
+## System Architecture
 
 The project is broken down into three main stages: Data Preparation, NLP Preprocessing, and Model Training.
 
@@ -70,7 +70,7 @@ The model was trained for 200 epochs, achieving:
 *   **Database:** MongoDB
 *   **NLP/Data Handling:** NLTK, Pandas, NumPy
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -114,7 +114,7 @@ The model was trained for 200 epochs, achieving:
     python model_cat_entropy2.py 
     ```
 
-## 📊 Results & Examples
+## Results & Examples
 
 Here is an example from the validation set demonstrating the model's performance.
 
@@ -128,14 +128,14 @@ Here is an example from the validation set demonstrating the model's performance
 
 The discrepancy in results highlights the challenges of the task and suggests areas for future improvement.
 
-## 🔮 Future Work
+## Future Work
 
 *   **Integrate Computer Vision:** Extend the project by building a CV model (e.g., YOLO, Faster R-CNN) to automatically detect objects and relationships from an image, creating a full end-to-end image-to-semantic-caption system.
 *   **Explore Transformer Models:** Replace the LSTM-based Seq2Seq architecture with a Transformer-based one to potentially capture long-range dependencies more effectively.
 *   **Increase Dataset Size:** Use a larger and more diverse dataset to improve the model's generalization and reduce errors.
 *   **Hyperparameter Optimization:** Conduct a systematic search for optimal parameters, such as embedding dimensions, number of LSTM units, and learning rate.
 
-## 👥 Acknowledgements
+## Acknowledgements
 
 This project was developed under the supervision of:
 *   **Dr. Fadel Sukkar**
